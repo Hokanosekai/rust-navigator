@@ -18,6 +18,26 @@ pub fn cd(args: Vec<&str>, cli: &mut ACli) -> Result<(), String> {
 
   let togo = args[0];
 
+  if togo.contains("/") {
+    let mut togo_split = togo.split("/");
+    let mut togo_vec: Vec<&str> = Vec::new();
+
+    while let Some(togo) = togo_split.next() {
+      togo_vec.push(togo);
+    }
+
+    for togo in togo_vec {
+      match cd(vec![togo], cli) {
+        Ok(_) => {},
+        Err(e) => {
+          return Err(e);
+        }
+      }
+    }
+
+    return Ok(())
+  }
+
   let current_node = match cli.current_node.clone() {
     Some(node) => {
       node
